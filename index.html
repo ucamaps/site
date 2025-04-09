@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <style>
+      .map-container {
+        width: 100%;
+        max-width: 1080px;
+        margin: 0 auto;
+      }
+  
+      .map-container img {
+        width: 100%;
+        height: auto;
+        display: block;
+      }
+    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mapa vitual de UCA</title>
+    <link rel="shortcut icon" type="image/x-icon" href="../img/iconpage.png">
+
+    <!------ Usa tipografia awesome ------>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
+    <!------ Tipografias de Google Fonts ------>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <!------ Hoja de estilos ------>
+    <link rel="stylesheet" href="style.css" />
+    <!------ Queries ------>
+    <link rel="stylesheet" href="queries.css" />
+  </head>
+  <body>
+    <!------ Botón de scroll al principio ------>
+    <button id="scroll-top">
+      <i class="fas fa-arrow-up"><img src="img/up.png" alt=""></i>
+    </button>
+    <!------ Header ------>
+    <header>
+      <nav>
+        <a href="index.html" id="logo"><img src="img/logobn.png" height="60" width="180" alt=""></a>  <!------ Sustituye con el logo ------>
+        <i class="fas fa-bars" id="ham-menu"></i>
+        <ul id="nav-bar">
+          
+          <li>
+            <a href="mapa.html">Mapa ilustrado</a>
+          </li>
+          <li>
+            <a href="mapasatelital.html">Mapa satelital</a>
+          </li>
+          <li>
+            <a href="horarios.html">Horarios</a>
+          </li>
+          <li>
+            <a href="eventos.html">Eventos</a>
+          </li>
+          <li>
+            <a href="galeria.html">Galeria</a>
+          </li>
+          <li>
+            <a href="contactos.html">Contacto</a>
+          </li>
+        </ul>
+      </nav>
+    </header>
+    <!------ Section: Hero , seccion principal, titulos y descr4ipcion breve ------>
+    <section class="hero" id="home">
+      <img src="img/header-shape.svg" id="header-shape" />
+      <div class="hero-content">
+        <h1>Mapa virtual UCA</h1>
+        <p>
+          Conoce la escuela a través de nuestro mapa virtual, conoce los horarios y eventos en la escuela.
+        </p>
+        <div class="btn-container">
+          <a href="mapa.html"><button class="primary-btn btn">Mapa ilustrado</button></a>
+         <a href="mapasatelital.html"> <button class="secondary-btn btn">Mapa satelital</button></a>
+        </div>
+      </div>
+      <div class="hero-img">
+        <img src="img/hero-image.svg" />
+      </div>
+    </section>
+    <!------ Section: Features, imagenes de la escuela con breve descripcion de las areas principales, ej: cafeterias, edificios, casa blanca/inscripciones, se agregan 3 fotografias de la escuela, las descripciones breves o se pueden omitir ------>
+    <section class="features" id="features">
+      <h2>Conoce el campus</h2>
+      <p class="section-desc">
+        Explora nuestro campus de manera interactiva y descubre todo lo que la Universidad Carolina tiene para ofrecer. Encuentra edificios, aulas, cafeterias, canchas y más con solo un clic.
+      </p>
+      <div class="row">
+        <div class="column">
+          <i class="fas fa-star"></i>
+          <h3> Eventos</h3>
+          <p>
+            Conoce los eventos su lugar, fecha y horarios.
+          </p>
+        </div>
+        <div class="column">
+          <i class="fas fa-thumbs-up"></i>
+          <h3>Galeria</h3>
+          <p>
+            Conoce imagenes del campus, de los salones, explanada y cafeterias.
+          </p>
+        </div>
+        <div class="column">
+          <i class="fas fa-graduation-cap"></i>
+          <h3>Horarios</h3>
+          <p>
+            Conoce los horarios según tu salón.
+          </p>
+        </div>
+      </div>
+    </section>
+    <!------ Section: Sobre nosotros; aqui se agrega la seccion donde se describe bbrevemente el proyecto, su proposito y opcionalmente la escuela. ------>
+    <section class="courses" id="courses">
+      <h2>Conoce lo que pasa en UCA</h2>
+      <p class="section-desc">
+       Conoce algunos de los eventos de la Universidad Carolina 
+      </p>
+      <div class="row">
+        <div class="column">
+          <img src="img/color.jpg" />
+          <h3>Color Fest</h3>
+          <p>
+            Año con año se lleva a cabo el color fest, un evento de bienvenida para los dragones de nuevo ingreso
+          </p>
+          <div class="courses-btn">
+            <button class="btn secondary-btn">Más información</button>
+          </div>
+        </div>
+        <div class="column">
+          <img src="img/altar.jpg" />
+          <h3>Altar de muertos</h3>
+          <p>
+            Cada 2 de noviembre la Universidad Carolina realiza el altar de muertos monumental en el barrio de Santa Anita
+          </p>
+          <div class="courses-btn">
+            <button class="btn secondary-btn">Más información</button>
+          </div>
+        </div>
+        <div class="column">
+          <img src="img/sport.jpg" />
+          <h3>Clubes y deportes</h3>
+          <p>
+            Conoce las actividades deportivas y culturales que ofrece la Universidad
+          </p>
+          <div class="courses-btn">
+            <button class="btn secondary-btn">Más información</button>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!------ Section: Testimonial ------>
+    <section class="testimonial" id="testimonial">
+     
+      <div class="map-container"> 
+
+          <center><img class="map"  src="img/mapa.PNG" alt="Mapa" usemap="#image-map">
+
+            <map name="image-map">
+              <area target="_self" alt="Cafeteria" title="Cafeteria" href="gral.html" coords="85,112,130,121,84,124,128,109" shape="rect">
+              <area target="_self" alt="Canchas" title="Canchas" href="canchas.html" coords="308,64,366,73" shape="rect">
+              <area target="_self" alt="Rectoría" title="Rectoría" href="gral.html" coords="457,94,521,115" shape="rect">
+              <area target="" alt="Laboratorios" title="Laboratorios" href="lab.html" coords="126,517,210,535" shape="rect">
+              <area target="" alt="Salida" title="Salida" href="gral.html" coords="12,499,63,518" shape="rect">
+              <area target="" alt="Edificio 1" title="Edificio 1" href="edificio.html" coords="391,440,463,464" shape="rect">
+              <area target="" alt="Caseta de vigilancia" title="Caseta de vigilancia" href="gral.html" coords="432,498,482,517" shape="rect">
+              <area target="" alt="Entrada" title="Entrada" href="gral.html" coords="576,506,642,521" shape="rect">
+              <area target="" alt="Estanquillo" title="Estanquillo" href="gral.html" coords="587,419,644,430" shape="rect">
+              <area target="" alt="Entrada peatonal" title="Entrada peatonal" href="gral.html" coords="712,356,776,390" shape="rect">
+              <area target="" alt="Edificio principal" title="Edificio principal" href="gral.html" coords="625,168,685,204" shape="rect">
+              <area target="" alt="Explanada" title="Explanada" href="expl.html" coords="481,300,545,317" shape="rect">
+              <area target="" alt="Oficinas administrativas" title="Oficinas administrativas" href="gral.html" coords="628,211,682,223" shape="rect">
+              <area target="" alt="Control escolar" title="Control escolar" href="gral.html" coords="389,354,481,374" shape="rect">
+              <area target="" alt="Edificio Peggy Dulany" title="Edificio Peggy Dulany" href="peggy.html" coords="302,282,413,310" shape="rect">
+              <area target="" alt="Invader institute" title="Invader institute" href="gral.html" coords="255,229,315,261" shape="rect">
+              <area target="" alt="Bosque prohibido" title="Bosque prohibido" href="gral.html" coords="14,195,64,227" shape="rect">
+              <area target="" alt="Inscripciones" title="Inscripciones" href="gral.html" coords="449,177,527,188" shape="rect">
+              <area target="" alt="Jardín principal" title="Jardín principal" href="gral.html" coords="420,240,476,268" shape="rect">
+              <area target="" alt="Danza aerea" title="Danza aerea" href="gral.html" coords="413,99,449,123" shape="rect">
+              <area target="" alt="Tienda" title="Tienda" href="gral.html" coords="393,138,432,154" shape="rect">
+          </map>
+          
+          </center>
+          
+      </div>
+      
+          
+    </section>
+    
+    <!------ Footer ------>
+    <footer>
+      <div class="row footer-about">
+        <h3>Mapa virutal de UCA</h3>
+        <p>
+          No te pierdas, conoce la escuela con nuestro mapa!
+        </p>
+        <div class="social-links"> <!------ Redes ------>
+          <a href="#">
+            <i class="fab fa-instagram"></i>
+          </a>
+          <a href="#">
+            <i class="fab fa-twitter"></i>
+          </a>
+          <a href="#">
+            <i class="fab fa-facebook-f"></i>
+          </a>
+        </div>
+      </div>
+      <div class="row footer-contact">
+        <div class="column">
+          <h4>Telefono</h4>
+          <p>8441234567</p>
+        </div>
+        <div class="column">
+          <h4>Email</h4>
+          <p>mapauca@gmail.com</p>
+        </div>
+      </div>
+      <p class="footer-copyright">
+        Copyright &copy; 2025 Universidad Carolina. Todos los derechos resevados.
+      </p>
+    </footer>
+    <!------ Script ------>
+    <script src="script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/image-map-resizer@1.0.10/js/imageMapResizer.min.js"></script>
+  <script>
+    window.onload = function() {
+      imageMapResize();
+    };
+  </script>
+  </body>
+</html>

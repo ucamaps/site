@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa Satelital</title>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="../img/iconpage.png">
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        /* Estilos anteriores (sin cambios) */
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            background: url('header-shape.svg') no-repeat center center fixed;
+            background-size: cover;
+            color: white;
+        }
+        #map {
+            height: 100vh;
+            width: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+        #sidebar {
+            width: 300px;
+            height: 100vh;
+            background-color: rgba(125, 125, 125, 0.9);
+            position: fixed;
+            top: 0;
+            right: -300px; /* Ocultar el menú por defecto */
+            z-index: 2;
+            transition: right 0.3s ease;
+            padding: 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        #sidebar.open {
+            right: 0; /* Mostrar el menú */
+        }
+        #menu-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px; /* Botón en la esquina superior derecha */
+            z-index: 3;
+            background-color: rgba(107, 107, 107, 0.8);
+            border: none;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        #menu-toggle:hover {
+            background-color: rgba(225, 225, 225, 0.8);
+        }
+        #title {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 10px;
+            color: white;
+        }
+        #map-type {
+            margin-bottom: 20px;
+        }
+        #map-type select {
+            padding: 10px;
+            width: 100%;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 5px;
+            font-size: 14px;
+            background-color: rgba(164, 164, 164, 0.1);
+            color: white;
+        }
+        .button-container {
+            display: flex;
+            gap: 10px;
+        }
+        .sidebar-button {
+            padding: 10px 15px;
+            border: none;
+            background: rgba(107, 107, 107, 0.8);
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            text-align: center;
+            flex: 1;
+        }
+        .sidebar-button:hover {
+            background: rgba(225, 225, 225, 0.8);
+        }
+        .black-button {
+            background-color: black;
+            color: white;
+            width: 100%;
+        }
+        #search-container {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        #search-input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 5px;
+            font-size: 14px;
+            background-color: rgba(164, 164, 164, 0.1);
+            color: white;
+            outline: none;
+        }
+        #search-input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        #create-access-button {
+            width: auto;
+            padding: 10px 20px;
+        }
+        #access-list {
+            margin-top: 20px;
+            background-color: rgba(164, 164, 164, 0.1);
+            border-radius: 5px;
+            padding: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        #access-list h3 {
+            margin: 0 0 10px 0;
+            font-size: 16px;
+            color: white;
+        }
+        .access-item {
+            padding: 8px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            margin-bottom: 5px;
+            cursor: pointer;
+            color: white;
+            text-align: center;
+        }
+        .access-item:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        #image-gallery {
+            margin-top: 20px;
+            background-color: rgba(164, 164, 164, 0.1);
+            border-radius: 5px;
+            padding: 10px;
+        }
+        #image-gallery h3 {
+            margin: 0 0 10px 0;
+            font-size: 16px;
+            color: white;
+        }
+        .gallery-image {
+            width: 100%;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            display: none; /* Ocultar todas las imágenes por defecto */
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Botón para abrir/cerrar el menú -->
+    <button id="menu-toggle" onclick="toggleMenu()">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Mapa -->
+    <div id="map"></div>
+
+    <!-- Barra lateral (menú flotante) -->
+    <div id="sidebar">
+        <div id="title">UCA Maps</div>
+
+        <!-- Selector de tipo de mapa -->
+        <div id="map-type">
+            <select id="map-type-select" onchange="changeMapType()">
+                <option value="satellite">Satelital</option>
+                <option value="normal">Normal</option>
+                <option value="relief">Relieve</option>
+            </select>
+        </div>
+
+        <!-- Contenedor de botones (uno al lado del otro) -->
+        <div class="button-container">
+            <button class="sidebar-button" onclick="goToInicio()">Inicio</button>
+            <button class="sidebar-button" onclick="goToMapa()">Mapa ilustrado</button>
+            <button class="sidebar-button" onclick="goToHorarios()">Horarios</button>
+            <button class="sidebar-button" onclick="goToEventos()">Galeria</button>
+        </div>
+
+        <!-- Barra de búsqueda y botón "Crear acceso" -->
+        <div id="search-container">
+            <input type="text" id="search-input" placeholder="Buscar acceso...">
+            <button id="create-access-button" class="sidebar-button black-button" onclick="enablePointCreation()">Crear acceso</button>
+        </div>
+
+        <!-- Lista de accesos creados -->
+        <div id="access-list">
+            <h3>Accesos creados</h3>
+            <!-- Aquí se agregarán dinámicamente los accesos -->
+        </div>
+
+        <!-- Mini mostrador de imágenes -->
+        <div id="image-gallery">
+            <h3>Imágenes relacionadas</h3>
+            <img id="canchas-image" src="img/canchas.JPG" alt="Canchas" class="gallery-image">
+            <img id="tallercc3-image" src="img/tallercc3.jpg" alt="Taller CC3" class="gallery-image">
+            <img id="domos-image" src="img/domos1.jpg" alt="Domos" class="gallery-image">
+            <img id="explanada-image" src="img/explanada.JPG" alt="Explanada" class="gallery-image">
+            <img id="dragonzito-image" src="img/dragonzito.JPG" alt="Dragonzito" class="gallery-image">
+            <img id="casablanca-image" src="img/casablanca .JPG" alt="Casa Blanca" class="gallery-image">
+        </div>
+    </div>
+
+    <script>
+        // Crear el mapa centrado en la Universidad Carolina, Saltillo
+        var map = L.map('map', {
+            center: [25.4148277, -101.0077295], // Coordenadas exactas de la UCA
+            zoom: 17,
+            scrollWheelZoom: true,
+            dragging: true,
+            zoomControl: true
+        });
+
+        // Capas de mapa
+        var satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+            attribution: '© Esri & contributors'
+        });
+
+        var normalLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        });
+
+        var reliefLayer = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        });
+
+        // Capa inicial
+        satelliteLayer.addTo(map);
+
+        // Función para cambiar el tipo de mapa
+        function changeMapType() {
+            const mapType = document.getElementById('map-type-select').value;
+            if (mapType === 'satellite') {
+                map.removeLayer(normalLayer);
+                map.removeLayer(reliefLayer);
+                satelliteLayer.addTo(map);
+            } else if (mapType === 'normal') {
+                map.removeLayer(satelliteLayer);
+                map.removeLayer(reliefLayer);
+                normalLayer.addTo(map);
+            } else if (mapType === 'relief') {
+                map.removeLayer(satelliteLayer);
+                map.removeLayer(normalLayer);
+                reliefLayer.addTo(map);
+            }
+        }
+
+        // Funciones para los botones
+        function goToInicio() {
+            window.location.href = "index.html"; // Redirige a la página de inicio
+        }
+
+        function goToMapa() {
+            window.location.href = "mapa.html"; // Redirige a la página del mapa
+        }
+
+        function goToHorarios() {
+            window.location.href = "horarios.html"; // Redirige a la página de horarios
+        }
+
+        function goToEventos() {
+            window.location.href = "galeria.html"; // Redirige a la página de galeria
+        }
+
+        // Variables para el punto de interés
+        let marker = null;
+        let isCreatingPoint = false;
+        const accessPoints = []; // Almacenar puntos de acceso creados
+
+        // Puntos de acceso por defecto (en rojo)
+        const defaultPoints = [
+            { name: "Domos", latlng: [25.4149864, -101.0070603], color: "red", image: "domos-image" },
+            { name: "Taller CC3", latlng: [25.4145776, -101.0062838], color: "red", image: "tallercc3-image" },
+            { name: "Canchas", latlng: [25.4142433, -101.0073989], color: "red", image: "canchas-image" },
+            { name: "Explanada", latlng: [25.415327, -101.008122], color: "red", image: "explanada-image" },
+            { name: "Dragonzito", latlng: [25.4149634, -101.0082354], color: "red", image: "dragonzito-image" },
+            { name: "Casa Blanca", latlng: [25.4153880, -101.0085821], color: "red", image: "casablanca-image" }
+        ];
+
+        // Agregar puntos por defecto al mapa y a la lista de accesos
+        defaultPoints.forEach(point => {
+            const marker = L.marker(point.latlng, {
+                draggable: false,
+                icon: L.icon({
+                    iconUrl: `https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-${point.color}.png`,
+                    iconSize: [25, 41],
+                    iconAnchor: [12, 41],
+                    popupAnchor: [1, -34]
+                })
+            }).addTo(map);
+            marker.bindPopup(`<b>${point.name}</b>`).openPopup();
+            accessPoints.push({ marker, name: point.name, image: point.image }); // Agregar a la lista de accesos
+
+            // Mostrar la imagen correspondiente al hacer clic en el punto del mapa
+            marker.on('click', () => {
+                showImage(point.image); // Mostrar la imagen correspondiente
+            });
+        });
+
+        // Función para habilitar la creación de puntos
+        function enablePointCreation() {
+            if (!isCreatingPoint) {
+                isCreatingPoint = true;
+                alert("Haz clic en el mapa para agregar un punto de interés.");
+            } else {
+                isCreatingPoint = false;
+                alert("Creación de puntos desactivada.");
+            }
+        }
+
+        // Evento para agregar un punto al hacer clic en el mapa
+        map.on('click', function(e) {
+            if (isCreatingPoint) {
+                const pointName = prompt("Ingresa un nombre para el punto de acceso:");
+                if (pointName) {
+                    const color = prompt("Elige un color para el punto (red, blue, green, orange, etc.):");
+                    if (color) {
+                        if (marker) {
+                            map.removeLayer(marker);
+                        }
+                        marker = L.marker(e.latlng, {
+                            draggable: true,
+                            icon: L.icon({
+                                iconUrl: `https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-${color}.png`,
+                                iconSize: [25, 41],
+                                iconAnchor: [12, 41],
+                                popupAnchor: [1, -34]
+                            })
+                        }).addTo(map);
+                        marker.bindPopup(`<b>${pointName}</b>`).openPopup();
+                        accessPoints.push({ marker, name: pointName, image: null }); // Guardar el punto en la lista
+                        updateAccessList(); // Actualizar la lista de accesos
+                        isCreatingPoint = false;
+                    } else {
+                        alert("Debes elegir un color para el punto.");
+                    }
+                } else {
+                    alert("Debes ingresar un nombre para el punto de acceso.");
+                }
+            }
+        });
+
+        // Función para actualizar la lista de accesos en la barra lateral
+        function updateAccessList() {
+            const accessList = document.getElementById('access-list');
+            accessList.innerHTML = "<h3>Accesos creados</h3>"; // Reiniciar la lista
+            accessPoints.forEach((point, index) => {
+                const accessItem = document.createElement('div');
+                accessItem.className = 'access-item';
+                accessItem.textContent = point.name;
+                accessItem.addEventListener('click', () => {
+                    point.marker.openPopup(); // Abrir el popup del marcador
+                    if (point.image) {
+                        showImage(point.image); // Mostrar la imagen correspondiente
+                    }
+                });
+                accessList.appendChild(accessItem);
+            });
+        }
+
+        // Función para mostrar la imagen correspondiente
+        function showImage(imageId) {
+            // Ocultar todas las imágenes
+            document.querySelectorAll('.gallery-image').forEach(img => {
+                img.style.display = 'none';
+            });
+
+            // Mostrar la imagen correspondiente
+            if (imageId) {
+                const imageElement = document.getElementById(imageId);
+                if (imageElement) {
+                    imageElement.style.display = 'block';
+                }
+            }
+        }
+
+        // Función para abrir/cerrar el menú
+        function toggleMenu() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('open');
+        }
+
+        // Inicializar la lista de accesos con los puntos por defecto
+        updateAccessList();
+
+        // Función para buscar puntos de acceso
+        document.getElementById('search-input').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const accessList = document.getElementById('access-list');
+            accessList.innerHTML = "<h3>Accesos creados</h3>"; // Reiniciar la lista
+
+            let firstMatch = null; // Almacenar el primer acceso que coincida
+
+            accessPoints.forEach(point => {
+                if (point.name.toLowerCase().includes(searchTerm)) {
+                    const accessItem = document.createElement('div');
+                    accessItem.className = 'access-item';
+                    accessItem.textContent = point.name;
+                    accessItem.addEventListener('click', () => {
+                        point.marker.openPopup(); // Abrir el popup del marcador
+                        if (point.image) {
+                            showImage(point.image); // Mostrar la imagen correspondiente
+                        }
+                    });
+                    accessList.appendChild(accessItem);
+
+                    // Si es el primer resultado, mostrar su imagen y abrir su popup
+                    if (!firstMatch) {
+                        firstMatch = point;
+                    }
+                }
+            });
+
+            // Mostrar la imagen y abrir el popup del primer resultado
+            if (firstMatch) {
+                firstMatch.marker.openPopup(); // Abrir el popup del marcador
+                if (firstMatch.image) {
+                    showImage(firstMatch.image); // Mostrar la imagen correspondiente
+                }
+            }
+        });
+    </script>
+</body>
+</html>
